@@ -1,9 +1,9 @@
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.logger import logger
 from app.models.user_model import UserModel
-from app.schemas.user.user_schema import UserCreateSchema
 
 class UserDAL:
     """Data Access Layer for operations with UserModel"""
@@ -20,5 +20,19 @@ class UserDAL:
             return user
         except SQLAlchemyError as e:
             await self.db_session.rollback()
-            logger.error(f"Error when creating user: {user.public_id}")
+            logger.error(f"UserDAL(create_user, 13): Error when creating user: {user.public_id}")
             return None
+
+    async def get_email(self, email_to_check: str):
+        """This func return email from database if exists
+        Args: verified_email(str)
+        Returns: str/None"""
+        try:
+           stmt = select(UserModel.email).where(UserModel.email==email_to_check)
+           result = await self.db_session.execute(stmt)
+           email = result.scalar_one_or_none()
+
+           return email
+        except SQLAlchemyError as e:
+            logger.error(f"[UserDAL(get_email, 27)]:Error when getting email: {e}")
+            raise
