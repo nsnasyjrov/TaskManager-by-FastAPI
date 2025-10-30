@@ -4,9 +4,9 @@ from sqlalchemy import Integer, String, Boolean, Date
 from sqlalchemy.orm import Mapped
 from sqlalchemy.sql.functions import func
 from sqlalchemy.testing.schema import mapped_column
-from app.models.base_model import BaseModel
+from app.models.declarative_model import DeclarativeModel
 
-class UserModel(BaseModel):
+class UserModel(DeclarativeModel):
     """
     SQLAlchemy ORM model representing an application user.
 
