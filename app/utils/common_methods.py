@@ -62,6 +62,10 @@ def get_layers_from_utils(name: str):
 
     return service_class, dal_class
 
+def build_response(**kwargs) -> dict:
+    """Создает JSON ответ, исключая None значения"""
+    return {k: v for k, v in kwargs.items() if v is not None}
+
 
 
 

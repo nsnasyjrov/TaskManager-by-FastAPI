@@ -1,4 +1,4 @@
-from app.core.response_classes import ResultFromBL
+from app.utils.response_classes import ResultFromBL
 from app.dal.user_dal import UserDAL
 from app.schemas.user.user_schema import UserCreateToDatabaseSchema
 from app.core.logger import logger
