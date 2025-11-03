@@ -20,6 +20,7 @@ class ResultFromHandler:
     @staticmethod
     def success(data: dict = None, message: str = None, status_code: int = 200):
         content = build_response(data=data, message=message)
+        content['status'] = "success"
 
         return JSONResponse(
             status_code=status_code,
@@ -27,7 +28,14 @@ class ResultFromHandler:
         )
 
     @staticmethod
-    def error(data: dict = None, message: str = None, status_code: int = None):
+    def error(data: dict = None, message: str = None, status_code: int = 400):
         content = build_response(data=data, message=message)
+        content['status'] = "error"
+
+        return JSONResponse(
+            status_code=status_code,
+            content=content
+        )
+
 
 

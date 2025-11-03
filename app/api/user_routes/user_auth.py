@@ -25,7 +25,7 @@ async def register(request: Request):
     try:
         user_schema = await request.json()
     except json.JSONDecodeError as e:
-        return ResultFromHandler.success(None, "Error validate data from client", 400)
+        return ResultFromHandler.error(None, "Error validate data from client", 400)
 
     user_service = request.state.container.get_layer(exp_entity)
     user = await user_service.create_user(user_schema)
