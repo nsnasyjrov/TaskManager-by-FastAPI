@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from pydantic_core import ValidationError
 
 load_dotenv()
 
@@ -65,6 +66,16 @@ def get_layers_from_utils(name: str):
 def build_response(**kwargs) -> dict:
     """Создает JSON ответ, исключая None значения"""
     return {k: v for k, v in kwargs.items() if v is not None}
+
+def pydantic_errors(validation_error: ValidationError):
+    """Formate pydantic e.errors() return to comfort"""
+    errors = {}
+
+    for error in validation_error.errors():
+        field = error["loc"][0]
+        errors[field] = error["msg"]
+
+    return errors
 
 
 
