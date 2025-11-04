@@ -25,15 +25,14 @@ async def authorization():
 async def register(request: Request):
     try:
         json_data = await request.json()
-        validate_schema = UserCreateValidateSchema(**json_data)
+        model = UserCreateValidateSchema(**json_data)
     except ValidationError as e:
         print("Пайдентик нашел ошибку")
         return ResultFromHandler.error(pydantic_errors(e), "Error when validate from client", 400)
     except Exception as e:
         return ResultFromHandler.error(e.__dict__, "Error when validate from client", 400)
 
-
     user_service = request.state.container.get_layer(exp_entity)
-    #user = await user_service.create_user(user_schema)
+    user = await user_service.create_user(model)
 
     #return {"message": "User created", "user_id": user.id}

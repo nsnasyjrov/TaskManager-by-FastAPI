@@ -1,6 +1,7 @@
 import importlib
 import os
 
+import bcrypt
 from dotenv import load_dotenv
 from pydantic_core import ValidationError
 from app.core.logger import logger
@@ -97,6 +98,12 @@ def pydantic_errors(validation_error: ValidationError):
         errors[field] = error["msg"]
 
     return errors
+
+def bcrypt_hash_password(password: str) -> str:
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
+
 
 
 

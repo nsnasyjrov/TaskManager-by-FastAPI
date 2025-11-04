@@ -32,11 +32,11 @@ class UserModel(DeclarativeModel):
     fullname: Mapped[str] = mapped_column(String, nullable=False)
     username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
-    email:  Mapped[str] = mapped_column(String, unique=True)
+    email:  Mapped[str] = mapped_column(String, unique=True, nullable=True)
     active: Mapped[bool] = mapped_column(Boolean, nullable=False)
     role: Mapped[str] = mapped_column(String, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(Date, default=func.now(), nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(Date)
+    updated_at: Mapped[datetime] = mapped_column(Date, nullable=True)
     public_id: Mapped[str] = mapped_column(String(36), unique=True, default=lambda: str(uuid.uuid4()))
 
     def __repr__(self):

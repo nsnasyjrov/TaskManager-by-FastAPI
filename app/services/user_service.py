@@ -1,14 +1,15 @@
 from app.utils.response_classes import ResultFromBL
 from app.dal.user_dal import UserDAL
-from app.schemas.user.user_schema import UserCreateToDatabaseSchema
+from app.schemas.user.user_schema import UserCreateToDatabaseSchema, UserCreateValidateSchema
 from app.core.logger import logger
 
 class UserService:
     def __init__(self, user_dal: UserDAL):
         self.user_dal = user_dal
 
-    async def create_user(self, user_data: UserCreateToDatabaseSchema):
+    async def create_user(self, handler_schema: UserCreateValidateSchema):
         try:
+            user_data = UserCreateToDatabaseSchema.create_schema(handler_schema)
             if await self.email_exist(user_data.email):
                 return ResultFromBL(success=False, message="Email is already exists")
 
@@ -27,5 +28,5 @@ class UserService:
             else:
                 return False
         except Exception as e:
-            logger.error(f"[UserService(email_exist, 14)]: Error when verifying email: {e}")
+            logger.error(f"[UserService(email_exist, 21)]: Error when verifying email: {e}")
             raise

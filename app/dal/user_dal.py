@@ -20,7 +20,7 @@ class UserDAL:
             return user
         except SQLAlchemyError as e:
             await self.db_session.rollback()
-            logger.error(f"UserDAL(create_user, 13): Error when creating user: {user.public_id}")
+            logger.error(f"UserDAL(create_user, 13): Error when creating user: {e}")
             return None
 
     async def get_email(self, email_to_check: str):
@@ -36,3 +36,5 @@ class UserDAL:
         except SQLAlchemyError as e:
             logger.error(f"[UserDAL(get_email, 27)]:Error when getting email: {e}")
             raise
+        except Exception as e:
+            logger.error(f"[UserDAL(get_email, 27)]:Database error: {e}")

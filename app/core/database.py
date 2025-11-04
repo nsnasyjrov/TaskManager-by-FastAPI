@@ -29,10 +29,6 @@ class Container:
 
         service_class, dal_class = get_layers_from_utils(exp_entity)
 
-        print(service_class)
-        print(dal_class)
-
-
         if service_class == -1 or dal_class == -1:
             logger.error("[app/core/database.py 33] Container: error when getting layer")
             return -1
