@@ -1,7 +1,9 @@
+import importlib
 import os
 
 from dotenv import load_dotenv
 from pydantic_core import ValidationError
+from app.core.logger import logger
 
 load_dotenv()
 
@@ -11,8 +13,10 @@ APP_DIR = os.path.dirname(CURRENT_DIR)
 DAL_PATH = os.path.join(APP_DIR, os.getenv('DAL_PATH', 'app/dal'))
 SERVICES_PATH = os.path.join(APP_DIR, os.getenv('SERVICES_PATH', 'app/services'))
 
-def find_file(name, path):
+def found_class(name, path):
     found_file = None
+    class_name = None
+
     extension = ".py" # Пускай остается,
                       # на случай если потребуется переиспользовать
                       # поиск файлов, можно будет создать ENUM и искать файл
@@ -32,6 +36,23 @@ def find_file(name, path):
                 found_file = os.path.join(root, filename)
                 break
 
+    if found_file is not None:
+        try:
+            part = found_file.split(os.sep)
+            app_index = part.index('app') # find app folder index
+            module_path = '.'.join(part[app_index:]).replace('.py', '')
+            module = importlib.import_module(module_path)
+
+            if path == DAL_PATH:
+                class_name = f"{name.capitalize()}DAL"
+            elif path == SERVICES_PATH:
+                class_name = f"{name.capitalize()}Service"
+
+            found_file = getattr(module, class_name)
+        except (ImportError, AttributeError) as e:
+            logger.error(f"[app/utils/commond_methods.py 53] found_class() : {e}")
+            return -1
+
     return found_file
 
 def select_dal(name: str):
@@ -39,7 +60,7 @@ def select_dal(name: str):
     var name must match: <name>_dal
     :return: Type"""
 
-    dal_class  =  find_file(name, DAL_PATH)
+    dal_class  =  found_class(name, DAL_PATH)
 
     return dal_class
 
@@ -48,7 +69,7 @@ def select_service(name: str):
     var name must match: <name>_service
     :return: Type"""
 
-    service_class = find_file(name, SERVICES_PATH)
+    service_class = found_class(name, SERVICES_PATH)
 
     return service_class
 
